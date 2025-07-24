@@ -6,7 +6,7 @@
   "framework": "nextjs",
   "functions": {
     "src/app/api/process-aging/route.ts": {
-      "maxDuration": 60
+      "maxDuration": 300
     }
   }
 }

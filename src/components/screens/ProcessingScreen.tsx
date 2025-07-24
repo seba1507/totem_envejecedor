@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useRef } from 'react';
 import Image from 'next/image';
+import { compressImage } from '@/utils/imageCompression';
 
 interface ProcessingScreenProps {
   imageUrl: string | null;
@@ -42,11 +43,21 @@ export default function ProcessingScreen({
       
       try {
         if (!isMounted) return;
-        setProcessingStatus("Enviando imagen a procesar...");
+        setProcessingStatus("Preparando imagen...");
+        
+        // Comprimir la imagen antes de enviarla
+        let compressedImageUrl = imageUrl;
+        try {
+          compressedImageUrl = await compressImage(imageUrl, 800, 1200, 0.85);
+          console.log('Imagen comprimida exitosamente');
+        } catch (compressionError) {
+          console.warn('No se pudo comprimir la imagen, usando original:', compressionError);
+        }
         
         // Convertir la dataURL a un Blob para enviarla
-        const response = await fetch(imageUrl);
+        const response = await fetch(compressedImageUrl);
         const blob = await response.blob();
+        console.log(`Tamaño de imagen a enviar: ${blob.size} bytes`);
 
         // Crear un FormData y añadir la imagen
         const formData = new FormData();
@@ -59,47 +70,65 @@ export default function ProcessingScreen({
         if (!isMounted) return;
         setProcessingStatus("Aplicando inteligencia artificial...");
         
-        const processResponse = await fetch('/api/process-aging', {
-          method: 'POST',
-          body: formData,
-          // Añadir cache-busting para asegurar que no se usa una respuesta cacheada
-          headers: {
-            'Cache-Control': 'no-cache, no-store',
-            'Pragma': 'no-cache',
-            'X-Request-Time': Date.now().toString()
+        // Crear controlador de timeout
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 290000); // 290 segundos
+        
+        try {
+          const processResponse = await fetch('/api/process-aging', {
+            method: 'POST',
+            body: formData,
+            signal: controller.signal,
+            // Añadir cache-busting para asegurar que no se usa una respuesta cacheada
+            headers: {
+              'Cache-Control': 'no-cache, no-store',
+              'Pragma': 'no-cache',
+              'X-Request-Time': Date.now().toString()
+            }
+          });
+          
+          clearTimeout(timeoutId);
+
+          if (!processResponse.ok) {
+            const errorData = await processResponse.json();
+            throw new Error(errorData.error || 'Error al procesar la imagen');
           }
-        });
 
-        if (!processResponse.ok) {
-          const errorData = await processResponse.json();
-          throw new Error(errorData.error || 'Error al procesar la imagen');
-        }
+          const data = await processResponse.json();
+          
+          if (!data.success) {
+            throw new Error('Error en el procesamiento de la imagen');
+          }
 
-        const data = await processResponse.json();
-        
-        if (!data.success) {
-          throw new Error('Error en el procesamiento de la imagen');
-        }
+          // Verificar si ya completamos este proceso o ya no estamos montados
+          if (isCompletedRef.current || !isMounted) {
+            console.log("Ignorando resultado porque el componente ya no está montado o el procesamiento ya fue completado");
+            return;
+          }
 
-        // Verificar si ya completamos este proceso o ya no estamos montados
-        if (isCompletedRef.current || !isMounted) {
-          console.log("Ignorando resultado porque el componente ya no está montado o el procesamiento ya fue completado");
-          return;
-        }
-
-        if (!isMounted) return;
-        setProcessingStatus("¡Imagen lista!");
-        
-        // URL de la imagen procesada
-        const processedImageUrl = data.imageUrl;
-        console.log("URL de imagen procesada:", processedImageUrl);
-        
-        // Marcar como completado ANTES de la llamada de retorno
-        isCompletedRef.current = true;
-        
-        // Asegurarnos de que solo llamamos a onProcessingComplete UNA VEZ
-        if (isMounted) {
-          onProcessingComplete(processedImageUrl);
+          if (!isMounted) return;
+          setProcessingStatus("¡Imagen lista!");
+          
+          // URL de la imagen procesada
+          const processedImageUrl = data.imageUrl;
+          console.log("URL de imagen procesada:", processedImageUrl);
+          
+          // Marcar como completado ANTES de la llamada de retorno
+          isCompletedRef.current = true;
+          
+          // Asegurarnos de que solo llamamos a onProcessingComplete UNA VEZ
+          if (isMounted) {
+            onProcessingComplete(processedImageUrl);
+          }
+          
+        } catch (fetchError) {
+          clearTimeout(timeoutId);
+          
+          if (fetchError instanceof Error && fetchError.name === 'AbortError') {
+            throw new Error('El procesamiento tardó demasiado tiempo. Por favor intenta nuevamente.');
+          }
+          
+          throw fetchError;
         }
         
       } catch (error) {
@@ -176,6 +205,9 @@ export default function ProcessingScreen({
         {/* Estado de procesamiento */}
         <p className="text-subtitle text-center px-8 max-w-md">
           {processingStatus}
+        </p>
+        <p className="text-sm text-center px-8 max-w-md mt-2 opacity-70">
+          Este proceso puede tomar hasta 2 minutos
         </p>
       </div>
     </div>

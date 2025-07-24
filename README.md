@@ -75,9 +75,9 @@ Para evitar notificaciones de descarga:
 La aplicación usa los siguientes parámetros para gpt-image-1:
 - **Prompt**: "haz que envejezca, pero que mantenga su identidad claramente"
 - **Modelo**: gpt-image-1
-- **Tamaño**: 1024x1536
-- **Calidad**: medium
-- **Fidelidad**: high
+- **Tamaño**: 1024x1024 (optimizado para rendimiento)
+- **Calidad**: standard
+- **Fidelidad**: medium
 
 ## 🚀 Despliegue en Vercel
 
@@ -90,11 +90,19 @@ La aplicación usa los siguientes parámetros para gpt-image-1:
 ## 📝 Notas Técnicas
 
 - Las imágenes se procesan en formato JPEG
-- Timeout de API configurado en 60 segundos
+- Timeout de API configurado en 300 segundos (5 minutos)
+- Compresión automática de imágenes grandes en el cliente
+- Límite de tamaño de imagen: 5MB
 - Prevención de solicitudes duplicadas (5 segundos)
 - Context API para manejo de stream de cámara
 - Las imágenes se devuelven como data URLs (base64)
 - No se requiere almacenamiento externo
+
+### Optimizaciones de rendimiento:
+- Compresión automática de imágenes antes de enviar
+- Tamaño de salida reducido a 1024x1024
+- Calidad optimizada para balance entre velocidad y resultado
+- Timeout extendido para conexiones lentas
 
 ## 🤝 Contribuciones
 
