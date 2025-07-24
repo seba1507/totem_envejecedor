@@ -76,7 +76,7 @@ export async function POST(request: NextRequest) {
     openAIFormData.append('prompt', 'haz que envejezca, pero que mantenga su identidad claramente');
     openAIFormData.append('model', 'gpt-image-1');
     openAIFormData.append('n', '1');
-    openAIFormData.append('size', '1024x1024'); // Tamaño reducido para mejor rendimiento
+    openAIFormData.append('size', '1024x1536'); // Tamaño reducido para mejor rendimiento
     openAIFormData.append('quality', 'low'); // Cambiado de 'low' a 'standard'
     openAIFormData.append('background', 'auto');
     openAIFormData.append('moderation', 'auto');
