@@ -10,6 +10,7 @@ import ResultScreen from '@/components/screens/ResultScreen';
 import Image from 'next/image';
 import Button from '@/components/ui/Button';
 import { CameraProvider } from '@/contexts/CameraContext';
+import { v4 as uuidv4 } from 'uuid';
 
 // Define los estados posibles
 type AppState =
@@ -29,6 +30,7 @@ export default function Home() {
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
   const [processedImageUrl, setProcessedImageUrl] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [currentRequestId, setCurrentRequestId] = useState<string | null>(null);
 
   // Estado para prevenir múltiples transiciones
   const [isNavigating, setIsNavigating] = useState(false);
@@ -65,6 +67,11 @@ export default function Home() {
 
     // Guardar la imagen primero
     setCapturedImage(imageData);
+    
+    // Generar UUID único para esta captura
+    const requestId = uuidv4();
+    setCurrentRequestId(requestId);
+    console.log("UUID generado para la captura:", requestId);
 
     // Forzar la navegación, incluso si está bloqueada
     setTimeout(() => {
@@ -155,6 +162,7 @@ export default function Home() {
           {currentState === 'processing' && (
             <ProcessingScreen
               imageUrl={capturedImage}
+              requestId={currentRequestId}
               onProcessingComplete={handleProcessingComplete}
               onProcessingError={handleProcessingError}
             />

@@ -129,12 +129,11 @@ export default function CountdownScreen({ onCapture }: CountdownScreenProps) {
           {videoReady && count > 0 && (
             <div className="absolute inset-0 flex items-center justify-center">
               <span
-                className="font-bold z-20 drop-shadow-lg"
+                className="font-bold z-20"
                 style={{
                   fontFamily: "Futura Std",
                   fontSize: "180px",
-                  textShadow: "0 0 15px #000",
-                  color: '#ef4e4c'
+                  color: 'rgba(239, 78, 76, 0.8)',
                 }}
               >
                 {count}

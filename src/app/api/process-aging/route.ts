@@ -9,49 +9,43 @@ if (!OPENAI_API_KEY) {
   console.error('OPENAI_API_KEY no está configurada en las variables de entorno');
 }
 
-// Mapa para rastrear solicitudes recientes y evitar duplicados
-const recentRequests = new Map();
+// Mapa para rastrear solicitudes procesadas y evitar duplicados
+// Almacena requestId -> resultados procesados
+const processedRequests = new Map<string, { imageUrl: string; fileName: string; timestamp: string }>();
+
+// Limpiar entradas antiguas cada 5 minutos
+setInterval(() => {
+  const fiveMinutesAgo = Date.now() - 300000;
+  processedRequests.forEach((value, key) => {
+    if (parseInt(value.timestamp) < fiveMinutesAgo) {
+      processedRequests.delete(key);
+    }
+  });
+}, 300000);
 
 export async function POST(request: NextRequest) {
   console.log('Recibida solicitud en API process-aging');
   
   try {
-    // Crear un ID único para esta solicitud
-    const requestTime = Date.now();
-    const requestId = `req_${requestTime}_${Math.random().toString(36).substring(2, 9)}`;
-    
-    // Verificar si tenemos solicitudes muy recientes (últimos 5 segundos)
-    const fiveSecondsAgo = requestTime - 5000;
-    let duplicateDetected = false;
-    
-    recentRequests.forEach((timestamp, key) => {
-      // Limpiar entradas antiguas
-      if (timestamp < fiveSecondsAgo) {
-        recentRequests.delete(key);
-      }
-      // Si encontramos una solicitud muy reciente, marcarla
-      else if (timestamp > fiveSecondsAgo) {
-        duplicateDetected = true;
-      }
-    });
-    
-    // Si detectamos una solicitud duplicada, devolver el error
-    if (duplicateDetected) {
-      console.log('Solicitud duplicada detectada, se devuelve error');
-      return NextResponse.json({ 
-        error: 'Solicitud duplicada. Por favor, espera unos segundos antes de intentarlo nuevamente.' 
-      }, { status: 429 });
-    }
-    
-    // Registrar esta solicitud
-    recentRequests.set(requestId, requestTime);
-    
     // Obtener datos de la petición
     const formData = await request.formData();
     const imageFile = formData.get('image');
+    const clientRequestId = formData.get('requestId');
     
     if (!imageFile || !(imageFile instanceof Blob)) {
       return NextResponse.json({ error: 'No se proporcionó ninguna imagen válida' }, { status: 400 });
+    }
+    
+    // Si tenemos un requestId del cliente, verificar si ya fue procesado
+    if (clientRequestId && typeof clientRequestId === 'string') {
+      const existingResult = processedRequests.get(clientRequestId);
+      if (existingResult) {
+        console.log(`Solicitud duplicada detectada para requestId: ${clientRequestId}, devolviendo resultado existente`);
+        return NextResponse.json({ 
+          success: true,
+          ...existingResult
+        });
+      }
     }
     
     if (!OPENAI_API_KEY) {
@@ -86,7 +80,7 @@ export async function POST(request: NextRequest) {
     console.log('Enviando imagen a OpenAI para procesamiento...');
     
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 250000); // 250 segundos
+    const timeoutId = setTimeout(() => controller.abort(), 240000); // 240 segundos (4 minutos)
     
     try {
       const openAIResponse = await fetch('https://api.openai.com/v1/images/edits', {
@@ -162,9 +156,6 @@ export async function POST(request: NextRequest) {
 
       console.log('Imagen procesada, tamaño:', imageBuffer.byteLength, 'bytes');
 
-      // Limpiar el map de solicitudes recientes para esta solicitud
-      recentRequests.delete(requestId);
-
       // Convertir el buffer a base64 para enviar al frontend
       const base64Image = Buffer.from(imageBuffer).toString('base64');
       const dataUrl = `data:image/jpeg;base64,${base64Image}`;
@@ -175,12 +166,23 @@ export async function POST(request: NextRequest) {
       
       console.log('Imagen procesada lista para enviar al frontend');
       
-      // Devolver la imagen como data URL
-      return NextResponse.json({ 
-        success: true,
+      // Preparar resultado
+      const result = {
         imageUrl: dataUrl,
         fileName: fileName,
         timestamp: timestamp
+      };
+      
+      // Si tenemos un requestId, guardar el resultado para evitar reprocesar
+      if (clientRequestId && typeof clientRequestId === 'string') {
+        processedRequests.set(clientRequestId, result);
+        console.log(`Resultado guardado para requestId: ${clientRequestId}`);
+      }
+      
+      // Devolver la imagen como data URL
+      return NextResponse.json({ 
+        success: true,
+        ...result
       });
       
     } catch (error) {

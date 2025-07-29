@@ -7,12 +7,14 @@ import { compressImage } from '@/utils/imageCompression';
 
 interface ProcessingScreenProps {
   imageUrl: string | null;
+  requestId: string | null;
   onProcessingComplete: (imageUrl: string) => void;
   onProcessingError: (error: string) => void;
 }
 
 export default function ProcessingScreen({ 
   imageUrl, 
+  requestId,
   onProcessingComplete, 
   onProcessingError 
 }: ProcessingScreenProps) {
@@ -109,6 +111,11 @@ export default function ProcessingScreen({
         
         // Añadir un timestamp único para cada solicitud
         formData.append('timestamp', Date.now().toString());
+        
+        // Añadir el requestId único
+        if (requestId) {
+          formData.append('requestId', requestId);
+        }
 
         // Enviar a la API de procesamiento
         if (!isMounted) return;
@@ -116,7 +123,7 @@ export default function ProcessingScreen({
         
         // Crear controlador de timeout
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 290000); // 290 segundos
+        const timeoutId = setTimeout(() => controller.abort(), 250000); // 250 segundos (4 min 10 seg)
         
         try {
           const processResponse = await fetch('/api/process-aging', {

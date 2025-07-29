@@ -1,7 +1,7 @@
 "use client";
 
-// Eliminado: import { useState } from "react";
-import Image from "next/image"; // Asegúrate de que esté importado
+import { useState } from "react";
+import Image from "next/image";
 import Button from "@/components/ui/Button";
 
 interface ReviewScreenProps {
@@ -11,6 +11,8 @@ interface ReviewScreenProps {
 }
 
 export default function ReviewScreen({ imageUrl, onAccept, onRetake }: ReviewScreenProps) {
+  const [isAccepting, setIsAccepting] = useState(false);
+  
   if (!imageUrl) return null;
 
   return (
@@ -21,7 +23,7 @@ export default function ReviewScreen({ imageUrl, onAccept, onRetake }: ReviewScr
         alt="Fondo"
         fill
         priority
-        sizes="100vw" // Added sizes prop
+        sizes="100vw"
         className="object-cover"
       />
 
@@ -29,17 +31,12 @@ export default function ReviewScreen({ imageUrl, onAccept, onRetake }: ReviewScr
         <h1 className="text-title-sm font-bold text-center mb-12" style={{ color: '#ef4e4c' }}>¿TE GUSTA TU FOTO?</h1>
 
         <div className="w-[600px] max-w-[90vw] aspect-[9/16] max-h-[1000px] bg-white rounded-2xl overflow-hidden shadow-xl relative">
-          {/* Reemplazado <img> con <Image /> */}
           <Image
             src={imageUrl}
             alt="Foto capturada"
-            fill // Usa fill para que se ajuste al contenedor con object-cover
-            sizes="100vw" // Añade sizes prop
+            fill
+            sizes="100vw"
             className="object-cover"
-            // Nota: Usar data URLs directamente con <Image> puede generar advertencias
-            // de rendimiento en la consola de Next.js. La solución ideal es subir
-            // la imagen capturada temporalmente antes de la pantalla de revisión.
-            // Pero para corregir el error/warning actual, esto funciona.
           />
         </div>
 
@@ -47,10 +44,19 @@ export default function ReviewScreen({ imageUrl, onAccept, onRetake }: ReviewScr
           <Button
             onClick={onRetake}
             className="bg-gray-600 hover:bg-gray-700"
+            disabled={isAccepting}
           >
             Repetir
           </Button>
-          <Button onClick={onAccept}>
+          <Button 
+            onClick={() => {
+              if (!isAccepting) {
+                setIsAccepting(true);
+                onAccept();
+              }
+            }}
+            disabled={isAccepting}
+          >
             OK
           </Button>
         </div>
