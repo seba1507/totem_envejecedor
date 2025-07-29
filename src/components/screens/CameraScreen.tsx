@@ -50,7 +50,7 @@ export default function CameraScreen({ onStartCountdown }: CameraScreenProps) {
           </p>
         </h1>
 
-        <div className="w-[90%] max-w-[720px] aspect-[9/16] max-h-[1200px] bg-black rounded-2xl overflow-hidden shadow-xl relative">
+        <div className="w-[600px] max-w-[90vw] aspect-[9/16] max-h-[1000px] bg-black rounded-2xl overflow-hidden shadow-xl relative">
           <video 
             ref={videoRef} 
             autoPlay 
