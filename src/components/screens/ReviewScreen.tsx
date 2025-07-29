@@ -26,7 +26,7 @@ export default function ReviewScreen({ imageUrl, onAccept, onRetake }: ReviewScr
       />
 
       <div className="relative z-10 flex flex-col items-center justify-center h-full p-6">
-        <h1 className="text-title-sm font-bold text-center mb-12 text-white drop-shadow">¿TE GUSTA TU FOTO?</h1> {/* Added text-white */}
+        <h1 className="text-title-sm font-bold text-center mb-12" style={{ color: '#ef4e4c' }}>¿TE GUSTA TU FOTO?</h1>
 
         <div className="w-[600px] max-w-[90vw] aspect-[9/16] max-h-[1000px] bg-white rounded-2xl overflow-hidden shadow-xl relative">
           {/* Reemplazado <img> con <Image /> */}

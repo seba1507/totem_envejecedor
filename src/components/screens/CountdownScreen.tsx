@@ -104,7 +104,7 @@ export default function CountdownScreen({ onCapture }: CountdownScreenProps) {
       />
 
       <div className="relative z-10 flex flex-col items-center justify-center h-full p-6">
-        <h1 className="text-title-sm font-bold text-center mb-8 text-white drop-shadow">¡PREPÁRATE!</h1>
+        <h1 className="text-title-sm font-bold text-center mb-8" style={{ color: '#ef4e4c' }}>¡PREPÁRATE!</h1>
 
         <div className="w-[600px] max-w-[90vw] aspect-[9/16] max-h-[1000px] bg-black rounded-2xl overflow-hidden shadow-xl relative">
           <video
@@ -129,11 +129,12 @@ export default function CountdownScreen({ onCapture }: CountdownScreenProps) {
           {videoReady && count > 0 && (
             <div className="absolute inset-0 flex items-center justify-center">
               <span
-                className="text-white font-bold z-20 drop-shadow-lg"
+                className="font-bold z-20 drop-shadow-lg"
                 style={{
                   fontFamily: "Futura Std",
                   fontSize: "180px",
                   textShadow: "0 0 15px #000",
+                  color: '#ef4e4c'
                 }}
               >
                 {count}

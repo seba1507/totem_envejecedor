@@ -194,7 +194,7 @@ export default function ProcessingScreen({
       <div className="relative z-10 flex flex-col items-center justify-center h-full">
         <h1 
           className="text-title-sm font-bold mb-8 text-center px-6"
-          style={{ fontFamily: 'Futura Std' }}
+          style={{ fontFamily: 'Futura Std', color: '#ef4e4c' }}
         >
           VIAJANDO AL FUTURO
         </h1>
@@ -203,10 +203,10 @@ export default function ProcessingScreen({
         <div className="w-32 h-32 border-8 border-white border-t-transparent rounded-full animate-spin mb-8"></div>
         
         {/* Estado de procesamiento */}
-        <p className="text-subtitle text-center px-8 max-w-md">
+        <p className="text-subtitle text-center px-8 max-w-md" style={{ color: '#ef4e4c' }}>
           {processingStatus}
         </p>
-        <p className="text-sm text-center px-8 max-w-md mt-2 opacity-70">
+        <p className="text-sm text-center px-8 max-w-md mt-2" style={{ color: '#ef4e4c', opacity: 0.7 }}>
           Este proceso puede tomar hasta 2 minutos
         </p>
       </div>

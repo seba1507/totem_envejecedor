@@ -169,7 +169,7 @@ export default function Home() {
 
           {currentState === 'error' && (
              <div className="absolute inset-0 z-20 flex flex-col items-center justify-center p-6">
-               <h1 className="text-title-sm font-bold text-center mb-8 text-white drop-shadow">¡UPS! ALGO SALIÓ MAL</h1>
+               <h1 className="text-title-sm font-bold text-center mb-8" style={{ color: '#ef4e4c' }}>¡UPS! ALGO SALIÓ MAL</h1>
 
                <div className="bg-red-500/80 p-4 rounded-xl mb-8 max-w-md">
                  <p className="text-subtitle text-white text-center">

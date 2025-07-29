@@ -106,7 +106,7 @@ export default function ResultScreen({ processedImageUrl, onReset }: ResultScree
           className="object-cover"
         />
         <div className="relative z-10 flex flex-col items-center justify-center h-full">
-          <p className="text-white text-xl">No hay imagen para mostrar</p>
+          <p className="text-xl" style={{ color: '#ef4e4c' }}>No hay imagen para mostrar</p>
         </div>
       </div>
     );
@@ -128,16 +128,16 @@ export default function ResultScreen({ processedImageUrl, onReset }: ResultScree
       <div className="relative z-10 flex flex-col items-center justify-center h-full px-6">
         <h1 
           className="text-title-sm font-bold mb-4"
-          style={{ fontFamily: 'Futura Std' }}
+          style={{ fontFamily: 'Futura Std', color: '#ef4e4c' }}
         >
           ¡ASÍ TE VERÁS!
         </h1>
         
         {/* Timer */}
-        <p className="text-subtitle mb-4">
+        <p className="text-subtitle mb-4" style={{ color: '#ef4e4c' }}>
           La imagen se descargará automáticamente
         </p>
-        <p className="text-xl mb-6">
+        <p className="text-xl mb-6" style={{ color: '#ef4e4c' }}>
           Tiempo restante: {timeRemaining} segundos
         </p>
         

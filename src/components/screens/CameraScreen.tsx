@@ -43,7 +43,7 @@ export default function CameraScreen({ onStartCountdown }: CameraScreenProps) {
       />
 
       <div className="relative z-10 flex flex-col items-center justify-center h-full p-6">
-        <h1 className="text-title-sm font-bold text-center mt-12 mb-8 text-white drop-shadow">
+        <h1 className="text-title-sm font-bold text-center mt-12 mb-8" style={{ color: '#ef4e4c' }}>
           PONTE EN POSICIÓN
           <p className="text-title-sm font-bold text-center mb-4">
             Y PREPÁRATE
@@ -83,7 +83,7 @@ export default function CameraScreen({ onStartCountdown }: CameraScreenProps) {
           )}
         </div>
 
-        <p className="text-subtitle mt-6 mb-6 text-center text-white drop-shadow">
+        <p className="text-subtitle mt-6 mb-6 text-center" style={{ color: '#ef4e4c' }}>
           Cuando estés listo, presiona:
         </p>
         <Button onClick={onStartCountdown} disabled={!videoReady || !!error}>
