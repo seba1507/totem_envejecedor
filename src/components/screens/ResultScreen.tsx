@@ -134,9 +134,7 @@ export default function ResultScreen({ processedImageUrl, onReset }: ResultScree
         </h1>
         
         {/* Timer */}
-        <p className="text-subtitle mb-4" style={{ color: '#ef4e4c' }}>
-          La imagen se descargará automáticamente
-        </p>
+
         <p className="text-xl mb-6" style={{ color: '#ef4e4c' }}>
           Tiempo restante: {timeRemaining} segundos
         </p>

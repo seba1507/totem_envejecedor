@@ -24,7 +24,7 @@ export default function ProcessingScreen({
   const messages = [
     {
       lines: ["MIENTRAS SE", "HACE LA", "MAGIA"],
-      emphasis: [false, false, true]
+      emphasis: [false, false, false]
     },
     {
       lines: ["TE CUENTO QUE", "SIN IMPORTAR", "LO QUE VEAS EN", "LA FOTO"],
@@ -32,7 +32,7 @@ export default function ProcessingScreen({
     },
     {
       lines: ["HOY CONOCERÁS", "LA INNOVACIÓN DE", "ROSÉLIANE"],
-      emphasis: [false, false, true]
+      emphasis: [false, false, false]
     },
     {
       lines: ["TU ALIADO PARA", "ROJECES Y", "PIELES SENSIBLES"],
@@ -40,7 +40,7 @@ export default function ProcessingScreen({
     },
     {
       lines: ["QUE ADEMÁS", "PREVIENE EL", "INFLAMMAGING"],
-      emphasis: [false, false, true]
+      emphasis: [false, false, false]
     }
   ];
   
@@ -56,7 +56,7 @@ export default function ProcessingScreen({
   useEffect(() => {
     const interval = setInterval(() => {
       setMessageIndex((prev) => (prev + 1) % messages.length);
-    }, 3000);
+    }, 4000);
     
     return () => clearInterval(interval);
   }, [messages.length]);
