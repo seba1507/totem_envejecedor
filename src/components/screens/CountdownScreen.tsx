@@ -106,7 +106,7 @@ export default function CountdownScreen({ onCapture }: CountdownScreenProps) {
       <div className="relative z-10 flex flex-col items-center justify-center h-full p-6">
         <h1 className="text-title-sm font-bold text-center mb-8 text-white drop-shadow">¡PREPÁRATE!</h1>
 
-        <div className="w-full max-w-3xl aspect-[9/16] max-h-[75vh] bg-black rounded-2xl overflow-hidden shadow-xl relative">
+        <div className="w-[90%] max-w-[720px] aspect-[9/16] max-h-[1200px] bg-black rounded-2xl overflow-hidden shadow-xl relative">
           <video
             ref={videoRef}
             autoPlay
