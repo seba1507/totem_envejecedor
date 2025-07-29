@@ -3,15 +3,17 @@
 :root {
   --foreground-rgb: 255, 255, 255;
   --background-color: #1a1a1a;
-  --button-color: #fdc62a;
-  --button-hover: #ffd253;
+  --button-color: #ef4e4c;
+  --button-hover: #f06e6c;
 }
 
+/* css-ignore-next-line */
+/* stylelint-disable-next-line at-rule-no-unknown */
 @theme {
   /* Tamaños de texto personalizados */
   --text-title-sm: 3rem;
   --text-title-sm--line-height: 1.1;
-  --text-title-lg: 4.5rem;
+  --text-title-lg: 6rem;
   --text-title-lg--line-height: 1;
   --text-subtitle: 1.5rem;
   --text-subtitle--line-height: 1.5;

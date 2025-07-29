@@ -77,7 +77,7 @@ export async function POST(request: NextRequest) {
     openAIFormData.append('model', 'gpt-image-1');
     openAIFormData.append('n', '1');
     openAIFormData.append('size', '1024x1536'); // Tamaño reducido para mejor rendimiento
-    openAIFormData.append('quality', 'low'); // Cambiado de 'low' a 'standard'
+    openAIFormData.append('quality', 'medium'); // Cambiado de 'low' a 'standard'
     openAIFormData.append('background', 'auto');
     openAIFormData.append('moderation', 'auto');
     openAIFormData.append('input_fidelity', 'high'); // Reducido de 'high' a 'medium'
