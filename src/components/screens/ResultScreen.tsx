@@ -142,7 +142,7 @@ export default function ResultScreen({ processedImageUrl, onReset }: ResultScree
         </p>
         
         {/* Imagen procesada */}
-        <div className="w-4/5 max-w-md aspect-[9/16] max-h-[55vh] bg-black rounded-2xl overflow-hidden shadow-xl relative mb-6">
+        <div className="w-full max-w-3xl aspect-[9/16] max-h-[75vh] bg-black rounded-2xl overflow-hidden shadow-xl relative mb-6">
           {isImageLoading && (
             <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-70">
               <div className="text-center text-white">
