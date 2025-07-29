@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useRef } from 'react';
 import Image from 'next/image';
+import Lottie from 'lottie-react';
 import { compressImage } from '@/utils/imageCompression';
 
 interface ProcessingScreenProps {
@@ -16,6 +17,49 @@ export default function ProcessingScreen({
   onProcessingError 
 }: ProcessingScreenProps) {
   const [processingStatus, setProcessingStatus] = useState<string>("Preparando imagen...");
+  const [messageIndex, setMessageIndex] = useState(0);
+  const [lottieData, setLottieData] = useState<object | null>(null);
+  
+  // Mensajes rotativos
+  const messages = [
+    {
+      lines: ["MIENTRAS SE", "HACE LA", "MAGIA"],
+      emphasis: [false, false, true]
+    },
+    {
+      lines: ["TE CUENTO QUE", "SIN IMPORTAR", "LO QUE VEAS EN", "LA FOTO"],
+      emphasis: [false, false, false, false]
+    },
+    {
+      lines: ["HOY CONOCERÁS", "LA INNOVACIÓN DE", "ROSÉLIANE"],
+      emphasis: [false, false, true]
+    },
+    {
+      lines: ["TU ALIADO PARA", "ROJECES Y", "PIELES SENSIBLES"],
+      emphasis: [false, false, false]
+    },
+    {
+      lines: ["QUE ADEMÁS", "PREVIENE EL", "INFLAMMAGING"],
+      emphasis: [false, false, true]
+    }
+  ];
+  
+  // Cargar animación Lottie
+  useEffect(() => {
+    fetch('/lottie/loading.json')
+      .then(response => response.json())
+      .then(data => setLottieData(data))
+      .catch(err => console.error('Error loading Lottie animation:', err));
+  }, []);
+  
+  // Rotar mensajes cada 3 segundos
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setMessageIndex((prev) => (prev + 1) % messages.length);
+    }, 3000);
+    
+    return () => clearInterval(interval);
+  }, [messages.length]);
   
   // Usamos refs en lugar de estado para evitar re-renders que podrían causar múltiples ejecuciones
   const isProcessingRef = useRef<boolean>(false);
@@ -178,6 +222,8 @@ export default function ProcessingScreen({
     }
   }, [imageUrl, onProcessingError]);
 
+  const currentMessage = messages[messageIndex];
+
   return (
     <div className="relative flex flex-col h-full w-full">
       {/* Fondo */}
@@ -191,16 +237,34 @@ export default function ProcessingScreen({
       />
       
       {/* Contenido */}
-      <div className="relative z-10 flex flex-col items-center justify-center h-full">
+      <div className="relative z-10 flex flex-col items-center justify-center h-full px-6">
+        {/* Mensajes rotativos */}
         <h1 
-          className="text-title-sm font-bold mb-8 text-center px-6"
-          style={{ fontFamily: 'Futura Std', color: '#ef4e4c' }}
+          className="font-bold tracking-tight leading-none transition-opacity duration-500 mb-12 text-center"
+          style={{ 
+            fontFamily: 'Futura Std', 
+            fontWeight: 'bold',
+            opacity: 1,
+            color: '#ef4e4c'
+          }}
         >
-          VIAJANDO AL FUTURO
+          {currentMessage.lines.map((line, index) => (
+            <div key={index} className={index === 0 ? "text-title-sm" : "text-title-sm mt-2"}>
+              {currentMessage.emphasis[index] ? <strong>{line}</strong> : line}
+            </div>
+          ))}
         </h1>
         
-        {/* Animación de carga */}
-        <div className="w-32 h-32 border-8 border-white border-t-transparent rounded-full animate-spin mb-8"></div>
+        {/* Animación Lottie */}
+        {lottieData && (
+          <div className="w-48 h-48 mb-8">
+            <Lottie 
+              animationData={lottieData as object}
+              loop={true}
+              autoplay={true}
+            />
+          </div>
+        )}
         
         {/* Estado de procesamiento */}
         <p className="text-subtitle text-center px-8 max-w-md" style={{ color: '#ef4e4c' }}>
